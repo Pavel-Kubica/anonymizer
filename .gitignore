@@ -1,0 +1,38 @@
+## Dev envs ##
+### IDEA ###
+.idea/
+### VS Code ###
+.vscode/
+.history/
+*.vsix
+
+## CMAKE build ##
+cmake-build-debug
+cmake-build-debug-visual-studio
+CMakeFiles/
+.cmake/
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+build
+
+
+## C++ ##
+### Prerequisites
+*.d
+*.slo
+*.lo
+*.o
+*.obj
+*.gch
+*.pch
+*.so
+*.dylib
+*.dll
+*.lai
+*.la
+*.a
+*.lib
+*.exe
+*.out
+*.app
