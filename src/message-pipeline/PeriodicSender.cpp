@@ -1,21 +1,22 @@
 
-#include "PeriodicDecoder.hpp"
+#include "PeriodicSender.hpp"
 #include "util/http_log.capnp.h"
 #include <capnp/message.h>
 #include <capnp/serialize.h>
 
-PeriodicDecoder::PeriodicDecoder(AsyncFileManager* fileManager) : fileManager(fileManager), shouldRun(false)
+PeriodicSender::PeriodicSender(AsyncFileManager* fileManager, DBManager* dbManager)
+        : fileManager(fileManager), dbManager(dbManager), shouldRun(false)
 {
 
 }
 
-void PeriodicDecoder::start()
+void PeriodicSender::start()
 {
-    decodingThread = std::thread(&PeriodicDecoder::threadFunc, this);
+    decodingThread = std::thread(&PeriodicSender::threadFunc, this);
     shouldRun = true;
 }
 
-void PeriodicDecoder::threadFunc()
+void PeriodicSender::threadFunc()
 {
     while (shouldRun)
     {
@@ -30,8 +31,9 @@ void PeriodicDecoder::threadFunc()
             {
                 auto reader = ::capnp::InputStreamMessageReader(bufferedStream);
                 auto record = reader.getRoot<HttpLogRecord>();
-                DBManager::toTransformedSql(record);
+                dbManager->addRow(record);
             }
         }
+        dbManager->doInsert();
     }
 }

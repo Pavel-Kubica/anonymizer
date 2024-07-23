@@ -1,25 +1,25 @@
 
-#include "MessageCacher.hpp"
+#include "MessageTransformer.hpp"
 #include <capnp/serialize.h>
 #include <http_log.capnp.h>
 #include <iostream>
 
-MessageCacher::MessageCacher(AsyncQueue<MessageWrapper>* queue, AsyncFileManager* fileManager) : queue(queue), fileManager(fileManager), shouldRun(false)
+MessageTransformer::MessageTransformer(AsyncQueue<MessageWrapper>* queue, AsyncFileManager* fileManager) : queue(queue), fileManager(fileManager), shouldRun(false)
 {}
 
-MessageCacher::~MessageCacher()
+MessageTransformer::~MessageTransformer()
 {
     shouldRun = false;
     storingThread.join();
 }
 
-void MessageCacher::start()
+void MessageTransformer::start()
 {
     shouldRun = true;
-    storingThread = std::thread(&MessageCacher::threadFunc, this);
+    storingThread = std::thread(&MessageTransformer::threadFunc, this);
 }
 
-void MessageCacher::threadFunc()
+void MessageTransformer::threadFunc()
 {
     while (shouldRun)
     {
@@ -39,7 +39,7 @@ void MessageCacher::threadFunc()
     }
 }
 
-void MessageCacher::transform(const HttpLogRecord::Reader& reader, HttpLogRecord::Builder& builder)
+void MessageTransformer::transform(const HttpLogRecord::Reader& reader, HttpLogRecord::Builder& builder)
 {
     builder.setTimestampEpochMilli(reader.getTimestampEpochMilli());
     builder.setResourceId(reader.getResourceId());
@@ -52,7 +52,7 @@ void MessageCacher::transform(const HttpLogRecord::Reader& reader, HttpLogRecord
     builder.setRemoteAddr(anonymizeIPAddr(reader.getRemoteAddr()));
 }
 
-std::string MessageCacher::anonymizeIPAddr(const capnp::Text::Reader& addrReader)
+std::string MessageTransformer::anonymizeIPAddr(const capnp::Text::Reader& addrReader)
 {
     std::string str = addrReader.cStr();
     while (str.back() != '.')

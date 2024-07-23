@@ -8,7 +8,7 @@
 #include <capnp/serialize.h>
 #include "http_log.capnp.h"
 
-// MessageCacher will call writeCapnpMessage every time it receives a new message. Whenever we are ready to send to database,
+// MessageTransformer will call writeCapnpMessage every time it receives a new message. Whenever we are ready to send to database,
 // DBManager will ask for all the files that were not written to DB yet, and we stop tracking them here.
 // If the DB write fails, the files will be returned for further caching, until they can finally be written to DB
 // Mutexes should guarantee that no record gets grabbed halfway through being written.

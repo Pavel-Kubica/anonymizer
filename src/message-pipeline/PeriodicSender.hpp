@@ -6,12 +6,12 @@
 #include <chrono>
 
 
-class PeriodicDecoder
+class PeriodicSender
 {
 public:
     const inline static std::chrono::duration INTERVAL = std::chrono::seconds(10);
 
-    PeriodicDecoder(AsyncFileManager* fileManager);
+    PeriodicSender(AsyncFileManager* fileManager, DBManager* dbManager);
     void start();
 
 private:

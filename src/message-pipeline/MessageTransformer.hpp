@@ -8,11 +8,11 @@
 #include <vector>
 #include <thread>
 
-class MessageCacher
+class MessageTransformer
 {
 public:
-    MessageCacher(AsyncQueue<MessageWrapper>* queue, AsyncFileManager* fileManager);
-    ~MessageCacher();
+    MessageTransformer(AsyncQueue<MessageWrapper>* queue, AsyncFileManager* fileManager);
+    ~MessageTransformer();
     void start();
 
 private:

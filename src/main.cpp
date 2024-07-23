@@ -1,7 +1,7 @@
 
-#include "MessageCacher.hpp"
+#include "MessageTransformer.hpp"
 #include "MessageConsumer.hpp"
-#include "PeriodicDecoder.hpp"
+#include "PeriodicSender.hpp"
 
 int main()
 {
@@ -9,7 +9,7 @@ int main()
     AsyncFileManager fm;
     MessageConsumer consumer{&q};
     MessageCacher cacher{&q, &fm};
-    PeriodicDecoder decoder{&fm};
+    PeriodicDecoder decoder{&fm, nullptr};
 
     consumer.start();
     cacher.start();
