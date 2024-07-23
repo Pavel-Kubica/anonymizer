@@ -18,7 +18,6 @@ build
 
 
 ## C++ ##
-### Prerequisites
 *.d
 *.slo
 *.lo
