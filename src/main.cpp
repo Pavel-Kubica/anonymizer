@@ -5,15 +5,17 @@
 
 int main()
 {
-    AsyncQueue<MessageWrapper> q;
-    AsyncFileManager fm;
-    MessageConsumer consumer{&q};
-    MessageCacher cacher{&q, &fm};
-    PeriodicDecoder decoder{&fm, nullptr};
+    AsyncQueue<MessageWrapper> queue;
+    AsyncFileManager fileManager;
+    MessageConsumer consumer{&queue};
+    MessageTransformer transformer{&queue, &fileManager};
+    DBManager dbManager("http://localhost:8124");
+    PeriodicSender sender{&fileManager, &dbManager};
 
     consumer.start();
-    cacher.start();
-    decoder.start();
+    transformer.start();
+    dbManager.initializeTables();
+    sender.start();
     sleep(1000);
     return 0;
 }

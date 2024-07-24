@@ -1,11 +1,64 @@
 
-
 #include "DBManager.hpp"
+#include <sstream>
+#include <cpr/cpr.h>
+#include <iostream>
 
-std::string DBManager::toTransformedSql(const HttpLogRecord::Reader& record)
+DBManager::DBManager(const std::string_view& dbUrl) : dbUrl(dbUrl), successfullyInitialized(false), failureStreak(0)
+{}
+
+void DBManager::initializeTables()
 {
-    printf("(%lu, %lu, %lu, %lu, %hu, %s, %s, %s, %s)\n", record.getTimestampEpochMilli(),
-           record.getResourceId(), record.getBytesSent(), record.getRequestTimeMilli(), record.getResponseStatus(),
-           record.getCacheStatus().cStr(), record.getMethod().cStr(), record.getRemoteAddr().cStr(), record.getUrl().cStr());
-    return std::string();
+    successfullyInitialized = executeQuery(Scripts::TABLE_INIT);
+}
+
+void DBManager::addRow(const HttpLogRecord::Reader& record)
+{
+    std::stringstream ss;
+    ss << "("
+       <<        record.getTimestampEpochMilli()
+       << ',' << record.getResourceId()
+       << ',' << record.getBytesSent()
+       << ',' << record.getRequestTimeMilli()
+       << ',' << record.getResponseStatus()
+       << ',' << '\'' << record.getCacheStatus().cStr() << '\''
+       << ',' << '\'' << record.getMethod().cStr() << '\''
+       << ',' << '\'' << record.getRemoteAddr().cStr() << '\''
+       << ',' << '\'' << record.getUrl().cStr() << '\''
+       << ")";
+    rowsToInsert.push_back(ss.str());
+}
+
+bool DBManager::doInsert()
+{
+    std::string script = std::string{Scripts::MAIN_TABLE_INSERT_START};
+    for (const std::string& row : rowsToInsert)
+    {
+        script += row + ",\n";
+    }
+    script[script.length() - 2] = ';'; // Replaces trailing extraneous comma
+    if (!successfullyInitialized)
+    {
+        script = std::string(Scripts::TABLE_INIT) + "\n" + script;
+    }
+    if (!executeQuery(script))
+        return false;
+    successfullyInitialized = true;
+    return true;
+}
+
+bool DBManager::executeQuery(const std::string_view& query)
+{
+    std::cout << query << std::endl;
+    auto response = cpr::Post(cpr::Url{dbUrl},
+                              cpr::Header{CONTENT_TYPE_HEADER, {"Content-Length", std::to_string(query.length())}},
+                              cpr::Timeout{TIMEOUT},
+                              cpr::Body(query));
+    if (response.status_code / 100 != 2)
+    {
+        std::cout << "Failed with code: " << response.status_code << ":\n" << response.text << std::endl;
+        return false;
+    }
+    std::cout << "DB write successful" << std::endl;
+    return true;
 }

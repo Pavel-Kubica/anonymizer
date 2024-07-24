@@ -34,6 +34,9 @@ void PeriodicSender::threadFunc()
                 dbManager->addRow(record);
             }
         }
-        dbManager->doInsert();
+        if (dbManager->doInsert())
+        {
+            fileManager->deleteFileNames(fileNames);
+        }
     }
 }

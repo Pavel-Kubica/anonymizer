@@ -9,7 +9,7 @@
 class PeriodicSender
 {
 public:
-    const inline static std::chrono::duration INTERVAL = std::chrono::seconds(10);
+    const inline static std::chrono::duration INTERVAL = std::chrono::seconds(63);
 
     PeriodicSender(AsyncFileManager* fileManager, DBManager* dbManager);
     void start();

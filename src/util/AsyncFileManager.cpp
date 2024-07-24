@@ -22,15 +22,19 @@ std::vector<std::string> AsyncFileManager::getFileNames()
     std::unique_lock lk(mtx);
     auto copy = fileNameCache;
     fileNameCache.clear();
+    fclose(currFile);
     setupNewFile();
     lk.unlock();
     return copy;
 }
 
-void AsyncFileManager::returnFileNames(const std::vector<std::string>& files)
+void AsyncFileManager::deleteFileNames(const std::vector<std::string>& files)
 {
     std::lock_guard lk(mtx);
-    std::copy(files.begin(), files.end(), std::back_inserter(fileNameCache));
+    for (const std::string& s : files)
+    {
+        remove(s.c_str());
+    }
 }
 
 void AsyncFileManager::setupNewFile()

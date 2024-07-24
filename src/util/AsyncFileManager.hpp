@@ -18,7 +18,7 @@ public:
     AsyncFileManager();
     void writeCapnpMessage(::capnp::MessageBuilder& message);
     std::vector<std::string> getFileNames();
-    void returnFileNames(const std::vector<std::string>& files);
+    void deleteFileNames(const std::vector<std::string>& files);
 
 private:
     void setupNewFile();
@@ -32,7 +32,7 @@ private:
         inline static size_t counter = 0;
         static std::string getNextFileName()
         {
-            return (std::string("cache") + std::to_string(counter++) + ".txt");
+            return (std::string("cache/file") + std::to_string(counter++));
         }
     };
 };
