@@ -1,22 +1,21 @@
 
-#include "MessageTransformer.hpp"
-#include "MessageConsumer.hpp"
-#include "PeriodicSender.hpp"
+#include "Application.hpp"
 #include <csignal>
+#include <functional>
+
+
+std::function<void(int)> terminationHandler;
+void signalHandler(int signal)
+{
+    terminationHandler(signal);
+}
 
 int main()
 {
-    AsyncQueue<MessageWrapper> queue;
-    AsyncFileManager fileManager;
-    MessageConsumer consumer{&queue};
-    MessageTransformer transformer{&queue, &fileManager};
-    DBManager dbManager("http://localhost:8124");
-    PeriodicSender sender{&fileManager, &dbManager};
-
-    consumer.start();
-    transformer.start();
-    dbManager.initializeTables();
-    sender.start();
-    sleep(1000);
+    Application app;
+    app.start();
+    terminationHandler = [&](int dummy) { app.stop(); };
+    signal(SIGINT, signalHandler);
+    sleep (1000);
     return 0;
 }
