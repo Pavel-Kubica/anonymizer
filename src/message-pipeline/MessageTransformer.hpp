@@ -14,12 +14,13 @@ public:
     MessageTransformer(AsyncQueue<MessageWrapper>* queue, AsyncFileManager* fileManager);
     ~MessageTransformer();
     void start();
+    void stop();
 
 private:
     // Non owning pointers
     AsyncQueue<MessageWrapper>* queue;
     AsyncFileManager* fileManager;
-    std::thread storingThread;
+    std::thread transformingThread;
     bool shouldRun;
 
     void threadFunc();

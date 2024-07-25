@@ -13,6 +13,7 @@ public:
     ~MessageConsumer();
     const inline static std::string TOPIC_STR = "http_log";
     bool start();
+    void stop();
 
 private:
     RdKafka::Consumer* consumer;

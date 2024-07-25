@@ -10,13 +10,13 @@ MessageTransformer::MessageTransformer(AsyncQueue<MessageWrapper>* queue, AsyncF
 MessageTransformer::~MessageTransformer()
 {
     shouldRun = false;
-    storingThread.join();
+    transformingThread.join();
 }
 
 void MessageTransformer::start()
 {
     shouldRun = true;
-    storingThread = std::thread(&MessageTransformer::threadFunc, this);
+    transformingThread = std::thread(&MessageTransformer::threadFunc, this);
 }
 
 void MessageTransformer::threadFunc()
@@ -66,4 +66,10 @@ std::string MessageTransformer::anonymizeIPAddr(const capnp::Text::Reader& addrR
     }
     str.push_back('X');
     return str;
+}
+
+void MessageTransformer::stop()
+{
+    shouldRun = false;
+    transformingThread.join();
 }

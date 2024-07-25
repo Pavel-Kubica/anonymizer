@@ -12,7 +12,7 @@ PeriodicSender::PeriodicSender(AsyncFileManager* fileManager, DBManager* dbManag
 
 void PeriodicSender::start()
 {
-    decodingThread = std::thread(&PeriodicSender::threadFunc, this);
+    sendingThread = std::thread(&PeriodicSender::threadFunc, this);
     shouldRun = true;
 }
 
@@ -40,3 +40,10 @@ void PeriodicSender::threadFunc()
         }
     }
 }
+
+void PeriodicSender::stop()
+{
+    shouldRun = false;
+    sendingThread.join();
+}
+

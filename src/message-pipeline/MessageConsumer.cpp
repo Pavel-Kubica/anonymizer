@@ -64,3 +64,9 @@ void MessageConsumer::threadFunc()
         }
     }
 }
+
+void MessageConsumer::stop()
+{
+    shouldRun = false;
+    consumingThread.join();
+}

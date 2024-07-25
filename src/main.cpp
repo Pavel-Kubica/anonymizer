@@ -2,6 +2,7 @@
 #include "MessageTransformer.hpp"
 #include "MessageConsumer.hpp"
 #include "PeriodicSender.hpp"
+#include <csignal>
 
 int main()
 {
