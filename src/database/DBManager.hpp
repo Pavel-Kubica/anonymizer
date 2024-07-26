@@ -9,16 +9,16 @@ class DBManager
 {
 public:
     explicit DBManager(const std::string_view& dbUrl);
-    void initializeTables();
+    bool initializeTables();
     void addRow(const HttpLogRecord::Reader& record);
     bool doInsert();
+    bool successfullyInitialized() const;
 
 private:
     const inline static std::pair<std::string, std::string> CONTENT_TYPE_HEADER = {"Content-Type", "application/x-www-form-urlencoded"};
     constexpr static std::chrono::duration TIMEOUT = std::chrono::milliseconds(1000);
     std::string dbUrl;
-    bool successfullyInitialized;
-    unsigned int failureStreak;
+    bool tablesInitialized;
     std::vector<std::string> rowsToInsert;
 
     bool executeQuery(const std::string_view& query);
