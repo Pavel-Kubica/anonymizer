@@ -22,17 +22,19 @@ public:
 
 private:
     void setupNewFile();
+    void recoverOldFiles();
 
     std::vector<std::string> fileNameCache;
     FILE* currFile;
     std::mutex mtx;
 
+    constexpr static std::string_view CACHE_DIR_NAME = "cache";
     struct FileNameGenerator
     {
         inline static size_t counter = 0;
         static std::string getNextFileName()
         {
-            return (std::string("cache/file") + std::to_string(counter++));
+            return (std::string(CACHE_DIR_NAME) + '/' + std::to_string(counter++));
         }
     };
 };
