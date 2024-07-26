@@ -29,7 +29,7 @@ ClickHouse (e.g. 1.2.3.`4` -> 1.2.3.`X`).
 that you handle those appropriately.
 * Your application should communicate with the ClickHouse server only through the proxy which has
 rate limiting for a 1 request per minute limit.
-* If there are any limitation about your application writeCapnpMessage down what they are, and how would you solve them in the future.
+* If there are any limitation about your application write down what they are, and how would you solve them in the future.
   For example
   * What is the latency of the data?
   * Is there any scenario when you will start losing data?
@@ -58,7 +58,7 @@ Load those data into ClickHouse, using a new table called `http_log` with the fo
 
 Provide a table with ready made totals of served traffic for any combination of resource ID, HTTP status,
 cache status and IP address. The totals need to be queried efficiently, in seconds at best, for on-demand
-rendering of traffic charts in a popFront-end such as Grafana.
+rendering of traffic charts in a front-end such as Grafana.
 
 Characterize the aggregated select query time to show the table architecture is fit for purpose.
 Provide an estimate of disk space required given
