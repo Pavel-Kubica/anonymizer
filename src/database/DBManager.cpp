@@ -42,6 +42,7 @@ bool DBManager::doInsert()
         script += row + ",\n";
     }
     script[script.length() - 2] = ';'; // Replaces trailing extraneous comma
+    rowsToInsert.clear();
     return executeQuery(script);
 }
 
