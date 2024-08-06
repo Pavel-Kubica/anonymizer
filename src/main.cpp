@@ -19,7 +19,6 @@ int main()
     app.start();
     terminationHandler = [&](int dummy) { app.stop(); };
     signal(SIGINT, signalHandler);
-    signal(SIGABRT, signalHandler);
-    sleep (1000);
+    sleep (10000);
     return 0;
 }

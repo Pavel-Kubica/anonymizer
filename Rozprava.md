@@ -31,7 +31,21 @@ interpretují na formát pro SQL insert příkaz, a až jsou všechny logy ze v�
 jsou smazány, pokud selže, zůstávají na disku, a po dalším intervalu jsou znovu přečteny a jejich logy odeslány. Bylo by možné pro posílání ukládat
 logy rovnou v paměti zároveň s ukládáním v souboru, ale tím by opět hrozilo vyčerpání paměti pokud by logů bylo hodně a připojení k databázi často selhávalo.
 
-### Tabulky v databázi
+### Optimalizace databáze
 
-TODO projection
+Na tuto část úlohy jsem po nějakém přemýšlení šel s myšlenkou že si předpočítám počty pro každou čtveřici žádaných parametrů, a při každém insertu
+budu tyto počty updatovat.
+Idea: 
+```
+    Tabulka: [resource_id, response_status, cache_status, remote_addr, count]
+    Při každém insertu do http_log se buď 
+        Chování 1 - count pro odpovídající řádky zvedne, nebo
+        Chování 2 - se refreshne celá tahle tabulka.
+    4 tyhle tabulky, každá seřazená podle jiného ze 4 parametrů, ideálně skrz projection seskupeno aby se dalo v grafaně selectovat z jedné tabulky.
+    Při hledání podle různých kombinací už určitě bude ořízlá tabulka dostatečně malá na full table scan
+```
+Nad tímto chováním jsem strávil značné množství času s PROJECTION a MATERIALIZED VIEW, než jsem konečně přišel na tabulku se sloupcem typu AggregateFunction.
+
+
+60h
 
