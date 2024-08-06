@@ -9,7 +9,6 @@ void Application::start()
 {
     consumer.start();
     transformer.start();
-    dbManager.initializeTables();
     sender.start();
 }
 

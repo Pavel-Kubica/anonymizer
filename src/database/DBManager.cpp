@@ -7,16 +7,6 @@
 DBManager::DBManager(const std::string_view& dbUrl) : dbUrl(dbUrl), tablesInitialized(false)
 {}
 
-bool DBManager::initializeTables()
-{
-    return tablesInitialized = executeQuery(Scripts::TABLE_INIT);
-}
-
-bool DBManager::successfullyInitialized() const
-{
-    return tablesInitialized;
-}
-
 void DBManager::addRow(const HttpLogRecord::Reader& record)
 {
     std::stringstream ss;

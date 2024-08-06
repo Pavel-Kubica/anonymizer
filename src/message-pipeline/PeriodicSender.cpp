@@ -21,13 +21,6 @@ void PeriodicSender::threadFunc()
     while (shouldRun)
     {
         std::this_thread::sleep_for(INTERVAL);
-
-        if (!dbManager->successfullyInitialized())
-        { // Clickhouse doesn't allow multiqueries, therefore we have to do this separately
-            dbManager->initializeTables();
-            continue;
-        }
-
         auto fileNames = fileManager->getFileNames();
         for (const auto& fileName : fileNames)
         {
