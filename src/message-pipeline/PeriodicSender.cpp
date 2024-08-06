@@ -3,6 +3,7 @@
 #include "util/http_log.capnp.h"
 #include <capnp/message.h>
 #include <capnp/serialize.h>
+#include <iostream>
 
 PeriodicSender::PeriodicSender(AsyncFileManager* fileManager, DBManager* dbManager)
         : fileManager(fileManager), dbManager(dbManager), shouldRun(false)
@@ -10,10 +11,18 @@ PeriodicSender::PeriodicSender(AsyncFileManager* fileManager, DBManager* dbManag
 
 }
 
+PeriodicSender::~PeriodicSender()
+{
+    if (shouldRun)
+    {
+        stop();
+    }
+}
+
 void PeriodicSender::start()
 {
-    sendingThread = std::thread(&PeriodicSender::threadFunc, this);
     shouldRun = true;
+    sendingThread = std::thread(&PeriodicSender::threadFunc, this);
 }
 
 void PeriodicSender::threadFunc()
@@ -22,6 +31,8 @@ void PeriodicSender::threadFunc()
     {
         std::this_thread::sleep_for(INTERVAL);
         auto fileNames = fileManager->getFileNames();
+        if (fileNames.empty()) continue;
+
         for (const auto& fileName : fileNames)
         {
             FILE* file = fopen(fileName.c_str(), "r");
@@ -33,6 +44,7 @@ void PeriodicSender::threadFunc()
                 auto record = reader.getRoot<HttpLogRecord>();
                 dbManager->addRow(record);
             }
+            fclose(file);
         }
         if (dbManager->doInsert())
         {

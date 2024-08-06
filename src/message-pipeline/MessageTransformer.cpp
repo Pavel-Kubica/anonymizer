@@ -9,8 +9,10 @@ MessageTransformer::MessageTransformer(AsyncQueue<MessageWrapper>* queue, AsyncF
 
 MessageTransformer::~MessageTransformer()
 {
-    shouldRun = false;
-    transformingThread.join();
+    if (shouldRun)
+    {
+        stop();
+    }
 }
 
 void MessageTransformer::start()
@@ -24,7 +26,9 @@ void MessageTransformer::threadFunc()
     while (shouldRun)
     {
         auto msg = queue->blockingPopFront();
-        void* alignedMessage = malloc(msg.get()->len());
+        if (msg.get() == nullptr) return;
+
+        char alignedMessage[2048];
         memcpy(alignedMessage, msg.get()->payload(), msg.get()->len());
 
         auto arr = kj::ArrayPtr<capnp::word>(reinterpret_cast<capnp::word*>(alignedMessage), msg.get()->len() / sizeof(capnp::word));
@@ -35,7 +39,6 @@ void MessageTransformer::threadFunc()
         auto builder = message.initRoot<HttpLogRecord>();
         transform(record, builder);
         fileManager->writeCapnpMessage(message);
-        free(alignedMessage);
     }
 }
 

@@ -18,6 +18,7 @@ public:
 private:
     RdKafka::Consumer* consumer;
     RdKafka::Topic* topic;
+    RdKafka::Conf* conf;
     std::thread consumingThread;
     bool shouldRun;
     // Non owning pointer

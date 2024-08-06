@@ -8,6 +8,9 @@ int main()
 {
     Application app;
     app.start();
-    sleep (10000);
+    char c;
+    std::cin >> c;
+    std::cout << "Stopping" << std::endl;
+    app.stop();
     return 0;
 }

@@ -13,6 +13,7 @@ public:
     // with fewer than 3 seconds extra, sometimes the next request times out anyway
 
     PeriodicSender(AsyncFileManager* fileManager, DBManager* dbManager);
+    ~PeriodicSender();
 
     void start();
     void stop();

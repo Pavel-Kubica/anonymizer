@@ -9,7 +9,7 @@
 MessageConsumer::MessageConsumer(AsyncQueue<MessageWrapper>* queue) : topic(nullptr), shouldRun(false), consumedMessageQueue(queue)
 {
     std::string error;
-    RdKafka::Conf* conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
+    conf = RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL);
     if (conf->set("bootstrap.servers", "localhost:9092", error) !=
         RdKafka::Conf::CONF_OK) {
         std::cerr << error << std::endl;
@@ -24,11 +24,13 @@ MessageConsumer::MessageConsumer(AsyncQueue<MessageWrapper>* queue) : topic(null
 
 MessageConsumer::~MessageConsumer()
 {
-    shouldRun = false;
-    consumingThread.join();
-    consumer->stop(topic, RdKafka::Topic::PARTITION_UA);
-    delete consumer;
+    if (shouldRun)
+    {
+        stop();
+    }
+    delete conf;
     delete topic;
+    delete consumer;
 }
 
 bool MessageConsumer::start()
@@ -69,4 +71,6 @@ void MessageConsumer::stop()
 {
     shouldRun = false;
     consumingThread.join();
+    consumedMessageQueue->emplace(MessageWrapper{nullptr});
+    consumer->stop(topic, RdKafka::Topic::PARTITION_UA);
 }
