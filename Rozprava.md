@@ -67,13 +67,12 @@ na toto nemusela být dostatečná práva).
 **C++ část**
 - ~15h porozumění technologiím (Kafka, Capnp, CH proxy)
 - ~15h implementace funkcionality
-- ~5h debug + testování
+- ~8h debug + testování + dodatečné funkcionality
 
 **ClickHouse část**
-- ~25h snaha porozumět různým konstrukcím, experimenty s nimi, zjišťování, jaké využít.
-
-~5h 
+- ~25h snaha porozumět různým konstrukcím, experimenty s nimi, zjišťování, jaké využít
+- ~5h testování 
 
 #### Celkem
 
-65h
+~68h
