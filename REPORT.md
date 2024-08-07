@@ -29,7 +29,7 @@ before restarting the program. It is practically impossible to prevent duplicate
 
 ### Latency
 
-TODO benchmark how long between consume and write end
+From some simple testing, the time between a message being consumed from Kafka and written to a file for later retrieval is within a millisecond.
 
 ## Table architecture efficiency
 
