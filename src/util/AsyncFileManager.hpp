@@ -17,6 +17,8 @@ class AsyncFileManager
 public:
     AsyncFileManager();
     void writeCapnpMessage(::capnp::MessageBuilder& message);
+    // If file names are not deleted, they will be returned again upon the next get.
+    // If a file's contents are already written to DB, do not call this function again before calling deleteFileNames with that file, otherwise duplicate records will be stored.
     std::vector<std::string> getFileNames();
     void deleteFileNames(const std::vector<std::string>& files);
 

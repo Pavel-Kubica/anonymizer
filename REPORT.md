@@ -11,6 +11,10 @@ Warning issued, program continues running
 Logs will continue to be stored in temporary files until they can be successfully written.
 Only after that will they be deleted.
 
+If too many subsequent writes fail, at some point the size of the accumulated data may exceed the maximum request size that the clickhouse proxy is prepared
+to accept. To prevent this, the program limits the size of the request string to a defined constant (PeriodicSender::MAX_REQUEST_SIZE). An insert request will
+be sent every minute whether this limit has been reached or not.
+
 ## Limitations
 
 ### Lost data

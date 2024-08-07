@@ -14,7 +14,7 @@ void Application::start()
 
 void Application::stop()
 {
+    sender.stop();
     consumer.stop();
     transformer.stop();
-    sender.stop();
 }

@@ -31,7 +31,6 @@ std::vector<std::string> AsyncFileManager::getFileNames()
 {
     std::unique_lock lk(mtx);
     auto copy = fileNameCache;
-    fileNameCache.clear();
     fclose(currFile);
     setupNewFile();
     lk.unlock();
@@ -43,6 +42,11 @@ void AsyncFileManager::deleteFileNames(const std::vector<std::string>& files)
     std::lock_guard lk(mtx);
     for (const std::string& s : files)
     {
+        auto it = std::find(fileNameCache.begin(), fileNameCache.end(), s);
+        if (it != fileNameCache.end())
+        {
+            fileNameCache.erase(it);
+        }
         remove(s.c_str());
     }
 }
